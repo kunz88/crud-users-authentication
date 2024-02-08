@@ -218,7 +218,7 @@ describe("Auth Validation email", () => {
         }
     });
     it("GET /auth/login invalid uuid 400", async () => {
-        const confirmedUuid= "1234567"
+        const confirmedUuid = "1234567"
         const { status } = await request(app).get(`/auth/emailValidation/${confirmedUuid}`);//valido l'utente
         assert.equal(status, 400);
     });
@@ -227,10 +227,10 @@ describe("Auth Validation email", () => {
         const { status } = await request(app).get(`/auth/emailValidation/${confirmedUuid}`);//valido l'utente
         assert.equal(status, 404);
     });
-}); 
+});
 
 // quarto ed ultimo capitolo test validazione utente loggato
-describe("testing auth/me", () => {
+describe("testing auth/me logged user open session", () => {
     before(async () => {
         await connection;
     });
@@ -243,7 +243,7 @@ describe("testing auth/me", () => {
         const { status } = await request(app).get("/status");
         assert.equal(status, 200);
     });
-    it("GET /auth/login 200 valid uuid", async () => {
+    it("GET /auth/me 200 valid JWT in the header", async () => {
         await request(app).post("/auth/signup").send({// creo un utente 
             name: "Carlo",
             email: "pippo@gmail.com",
@@ -258,18 +258,38 @@ describe("testing auth/me", () => {
             assert.equal(status, 401);
         }
         else {// se esiste l'utente e la validazione va a buon fine restuisco status 200
-            const { status } = await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
+            await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
+            const { body } = await request(app).post("/auth/login").send({//login dell'utente
+                email: "pippo@gmail.com",
+                password: "Yoq@ndowi21389G",
+            });
+            const { status } = await request(app).get("/auth/me").set('token', body.token)
             assert.equal(status, 200);
         }
     });
-    it("GET /auth/login invalid uuid 400", async () => {
-        const confirmedUuid= "1234567"
-        const { status } = await request(app).get(`/auth/emailValidation/${confirmedUuid}`);//valido l'utente
-        assert.equal(status, 400);
-    });
-    it("GET /auth/login valid uuid but user not found 404", async () => {
-        const confirmedUuid = uuidv4()
-        const { status } = await request(app).get(`/auth/emailValidation/${confirmedUuid}`);//valido l'utente
-        assert.equal(status, 404);
+    it("GET /auth/me 401 invalid JWT in the header", async () => {
+        await request(app).post("/auth/signup").send({// creo un utente 
+            name: "Carlo",
+            email: "pluto@gmail.com",
+            password: "Yoq@ndowi21389G",
+        });
+        const user = await User.findOne({ email: "pluto@gmail.com" });//chiamo il database per prendere l'utente creato 
+        if (!user) {// se non esiste l'utente restituisco status 401
+            const { status } = await request(app).post("/auth/login").send({// testo l'endpoint per il login dell'utente
+                email: "pluto@gmail.com",
+                password: "Yoq@ndowi21389G",
+            });
+            assert.equal(status, 401);
+        }
+        else {// se esiste l'utente e la validazione va a buon fine restuisco status 200
+            await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
+            await request(app).post("/auth/login").send({//login dell'utente
+                email: "pluto@gmail.com",
+                password: "Yoq@ndowi21389G",
+            });
+            const invalidToken="pippo"
+            const { status } = await request(app).get("/auth/me").set('token',invalidToken )
+            assert.equal(status, 401);
+        }
     });
 }); 

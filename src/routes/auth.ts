@@ -8,7 +8,12 @@ import { v4 as uuidv4 } from 'uuid'
 import jwt from "jsonwebtoken";
 import { auth, jwtSalt } from "../middlewares/auth";
 
-const saltRounds = 10;// sale per hashing
+import { saltRounds } from "../app";
+
+
+
+
+
 
 app.get("/me", auth, (req: Request, res: Response) => {// in questo endpoint si suppone che l'utente sia già loggato, si controlla tramite 
     // il middleware "auth" che sia il token sia salvato nell'header delle richiesta, così da validare la richiesta http dell'utente e inviare una risposta

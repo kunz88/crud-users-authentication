@@ -230,7 +230,7 @@ describe("Auth Validation email", () => {
 }); 
 
 // quarto ed ultimo capitolo test validazione utente loggato
-describe("Auth Validation email", () => {
+describe("testing auth/me", () => {
     before(async () => {
         await connection;
     });

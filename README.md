@@ -1,3 +1,3 @@
-# Project CRUD users and auth withexpress typescript and mongoose and express-validator
+# Project CRUD users and auth withexpress typescript , mongoose and express-validator
 ## using env variables and testing with supertest,mocha,chai 
-## working with JWT and uuid and bcrypt
+## working with JWT , uuid and bcrypt

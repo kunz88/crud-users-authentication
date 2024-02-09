@@ -227,8 +227,8 @@ describe("testing auth/me logged user open session", () => {
             email: "pluto@gmail.com",
             password: "Yoq@ndowi21389G",
         });
-        const invalidToken = "pippo"
-        const { status } = await request(app).get("/auth/me").set('token', invalidToken)
+        const invalidToken = "pippo"// creo un token non valido
+        const { status } = await request(app).get("/auth/me").set('token', invalidToken) // triggero il middleware auth che ritorna status 404
         assert.equal(status, 401);
 
     });

@@ -76,21 +76,15 @@ describe("Auth Login", () => {
             password: "Yoq@ndowi21389G",
         });
         const user = await User.findOne({ email: "pippo@gmail.com" });//chiamo il database per prendere l'utente creato 
-        if (!user) {// se non esiste l'utente restituisco status 401
-            const { status } = await request(app).post("/auth/login").send({// testo l'endpoint per il login dell'utente
-                email: "pippo@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            assert.equal(status, 401);
-        }
-        else {// se esiste l'utente restituisco status 200
-            await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
-            const { status } = await request(app).post("/auth/login").send({// testo l'endpoint per il login dell'utente
-                email: "pippo@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            assert.equal(status, 200);
-        }
+
+
+        await request(app).get(`/auth/emailValidation/${user!.confirmedUuid}`);//valido l'utente
+        const { status } = await request(app).post("/auth/login").send({// testo l'endpoint per il login dell'utente
+            email: "pippo@gmail.com",
+            password: "Yoq@ndowi21389G",
+        });
+        assert.equal(status, 200);
+
     });
     it("POST /auth/login 401 wrong password", async () => {
         await request(app).post("/auth/signup").send({// creo un utente 
@@ -99,21 +93,14 @@ describe("Auth Login", () => {
             password: "Yoq@ndowi21389G",
         });
         const user = await User.findOne({ email: "pluto@gmail.com" });//chiamo il database per prendere l'utente creato 
-        if (!user) {// se non esiste l'utente restituisco status 401
-            const { status } = await request(app).post("/auth/login").send({// testo l'endpoint per il login dell'utente
-                email: "pluto@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            assert.equal(status, 401);
-        }
-        else {// se esiste l'utente ma la password è sbagliata restituisco status 401
-            await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
-            const { status } = await request(app).post("/auth/login").send({
-                email: "pluto@gmail.com",
-                password: "Yoq@ndowi21389G++",
-            });
-            assert.equal(status, 401);
-        }
+
+        await request(app).get(`/auth/emailValidation/${user!.confirmedUuid}`);//valido l'utente
+        const { status } = await request(app).post("/auth/login").send({
+            email: "pluto@gmail.com",
+            password: "Yoq@ndowi21389G++",
+        });
+        assert.equal(status, 401);
+
     });
     it("POST /auth/login 401 wrong email", async () => {
         await request(app).post("/auth/signup").send({// creo un utente 
@@ -122,21 +109,13 @@ describe("Auth Login", () => {
             password: "Yoq@ndowi21389G",
         });
         const user = await User.findOne({ email: "minni@gmail.com" });//chiamo il database per prendere l'utente creato 
-        if (!user) {// se non esiste l'utente restituisco status 401
-            const { status } = await request(app).post("/auth/login").send({
-                email: "minni@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            assert.equal(status, 401);
-        }
-        else {// se esiste l'utente ma l'email è sbagliata restituisco status 401
-            await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
-            const { status } = await request(app).post("/auth/login").send({
-                email: "monno@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            assert.equal(status, 401);
-        }
+        await request(app).get(`/auth/emailValidation/${user!.confirmedUuid}`);//valido l'utente
+        const { status } = await request(app).post("/auth/login").send({
+            email: "monno@gmail.com",
+            password: "Yoq@ndowi21389G",
+        });
+        assert.equal(status, 401);
+
     });
     it("POST /auth/login missing field 400 email", async () => {
         await request(app).post("/auth/signup").send({// creo un utente 
@@ -145,20 +124,13 @@ describe("Auth Login", () => {
             password: "Yoq@ndowi21389G",
         });
         const user = await User.findOne({ email: "paperino@gmail.com" });//chiamo il database per prendere l'utente creato 
-        if (!user) {// se non esiste l'utente restituisco status 401
-            const { status } = await request(app).post("/auth/login").send({
-                email: "paperino@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            assert.equal(status, 401);
-        }
-        else {// se esiste l'utente ma non viene inserita l'email restituisco status 400
-            await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
-            const { status } = await request(app).post("/auth/login").send({
-                password: "Yoq@ndowi21389G"
-            });
-            assert.equal(status, 400);
-        }
+
+        await request(app).get(`/auth/emailValidation/${user!.confirmedUuid}`);//valido l'utente
+        const { status } = await request(app).post("/auth/login").send({
+            password: "Yoq@ndowi21389G"
+        });
+        assert.equal(status, 400);
+
     });
     it("POST /auth/signup 400 missing field password", async () => {
         await request(app).post("/auth/signup").send({// creo un utente 
@@ -167,20 +139,12 @@ describe("Auth Login", () => {
             password: "Yoq@ndowi21389G",
         });
         const user = await User.findOne({ email: "goku@gmail.com" });//chiamo il database per prendere l'utente creato 
-        if (!user) {// se non esiste l'utente restituisco status 401
-            const { status } = await request(app).post("/auth/login").send({
-                email: "goku@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            assert.equal(status, 401);
-        }
-        else {// se esiste l'utente ma non viene inserita la password restituisco status 400
-            await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
-            const { status } = await request(app).post("/auth/login").send({
-                email: "goku@gmail.com"
-            });
-            assert.equal(status, 400);
-        }
+        await request(app).get(`/auth/emailValidation/${user!.confirmedUuid}`);//valido l'utente
+        const { status } = await request(app).post("/auth/login").send({
+            email: "goku@gmail.com"
+        });
+        assert.equal(status, 400);
+
     });
 });
 
@@ -205,17 +169,9 @@ describe("Auth Validation email", () => {
             password: "Yoq@ndowi21389G",
         });
         const user = await User.findOne({ email: "pippo@gmail.com" });//chiamo il database per prendere l'utente creato 
-        if (!user) {// se non esiste l'utente restituisco status 401
-            const { status } = await request(app).post("/auth/login").send({// testo l'endpoint per il login dell'utente
-                email: "pippo@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            assert.equal(status, 401);
-        }
-        else {// se esiste l'utente e la validazione va a buon fine restuisco status 200
-            const { status } = await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
-            assert.equal(status, 200);
-        }
+        const { status } = await request(app).get(`/auth/emailValidation/${user!.confirmedUuid}`);//valido l'utente
+        assert.equal(status, 200);
+
     });
     it("GET /auth/login invalid uuid 400", async () => {
         const confirmedUuid = "1234567"
@@ -250,22 +206,14 @@ describe("testing auth/me logged user open session", () => {
             password: "Yoq@ndowi21389G",
         });
         const user = await User.findOne({ email: "pippo@gmail.com" });//chiamo il database per prendere l'utente creato 
-        if (!user) {// se non esiste l'utente restituisco status 401
-            const { status } = await request(app).post("/auth/login").send({// testo l'endpoint per il login dell'utente
-                email: "pippo@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            assert.equal(status, 401);
-        }
-        else {// se esiste l'utente e la validazione va a buon fine restuisco status 200
-            await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
-            const { body } = await request(app).post("/auth/login").send({//login dell'utente
-                email: "pippo@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            const { status } = await request(app).get("/auth/me").set('token', body.token)
-            assert.equal(status, 200);
-        }
+        await request(app).get(`/auth/emailValidation/${user!.confirmedUuid}`);//valido l'utente
+        const { body } = await request(app).post("/auth/login").send({//login dell'utente
+            email: "pippo@gmail.com",
+            password: "Yoq@ndowi21389G",
+        });
+        const { status } = await request(app).get("/auth/me").set('token', body.token)
+        assert.equal(status, 200);
+
     });
     it("GET /auth/me 401 invalid JWT in the header", async () => {
         await request(app).post("/auth/signup").send({// creo un utente 
@@ -274,22 +222,14 @@ describe("testing auth/me logged user open session", () => {
             password: "Yoq@ndowi21389G",
         });
         const user = await User.findOne({ email: "pluto@gmail.com" });//chiamo il database per prendere l'utente creato 
-        if (!user) {// se non esiste l'utente restituisco status 401
-            const { status } = await request(app).post("/auth/login").send({// testo l'endpoint per il login dell'utente
-                email: "pluto@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            assert.equal(status, 401);
-        }
-        else {// se esiste l'utente e la validazione va a buon fine restuisco status 200
-            await request(app).get(`/auth/emailValidation/${user.confirmedUuid}`);//valido l'utente
-            await request(app).post("/auth/login").send({//login dell'utente
-                email: "pluto@gmail.com",
-                password: "Yoq@ndowi21389G",
-            });
-            const invalidToken="pippo"
-            const { status } = await request(app).get("/auth/me").set('token',invalidToken )
-            assert.equal(status, 401);
-        }
+        await request(app).get(`/auth/emailValidation/${user!.confirmedUuid}`);//valido l'utente
+        await request(app).post("/auth/login").send({//login dell'utente
+            email: "pluto@gmail.com",
+            password: "Yoq@ndowi21389G",
+        });
+        const invalidToken = "pippo"
+        const { status } = await request(app).get("/auth/me").set('token', invalidToken)
+        assert.equal(status, 401);
+
     });
 }); 
